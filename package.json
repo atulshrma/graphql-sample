@@ -4,7 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "webpack": "webpack --mode development",
+    "dev": "npm run webpack && COMPILER_ENV=server babel-node src/server.js",
+    "webpack-production": "NODE_ENV=production webpack --mode production",
+    "babel-production": "NODE_ENV=production COMPILER_ENV=server babel --out-dir dist src",
+    "start": "node dist/server.js",
+    "build": "npm run webpack-production && npm run babel-production",
+    "seed": "babel-node ./src/helpers/seed.js"
   },
   "author": "",
   "license": "ISC",
@@ -37,7 +43,9 @@
     "webpack-cli": "^4.6.0"
   },
   "dependencies": {
+    "@apollo/client": "^3.3.15",
     "axios": "^0.21.1",
+    "boom": "^7.3.0",
     "compression": "^1.7.4",
     "ejs": "^3.1.6",
     "express": "^4.17.1",
@@ -46,6 +54,8 @@
     "mongoose": "^5.12.5",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-router-config": "^5.1.1",
+    "react-router-dom": "^5.2.0",
     "react-table": "^7.6.3"
   }
 }
