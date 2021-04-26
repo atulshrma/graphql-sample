@@ -12,7 +12,7 @@ const pages = ['jobs'];
 const generateEntryPoints = (entry) => {
     return entry.reduce((obj, item) => {
         return Object.assign({}, obj, {
-            [item]: [path.resolve('src', 'entrypoints', `${item}.jsx`)],
+            [item]: [path.resolve('src', 'entrypoints', `${item}.js`)],
         });
     }, {});
 };
@@ -27,11 +27,31 @@ const generateHtml = (entry) => {
     });
 };
 
-const env = dotenv.config().parsed;
-const envKeys = Object.keys(env).reduce((prev, next) => {
-    prev[`process.env.${next}`] = JSON.stringify(env[next]);
-    return prev;
-}, {});
+const plugins = [
+    new CleanWebpackPlugin(),
+    // create blog,
+    new MiniCssExtractPlugin({
+        filename: production ? 'css/[contentHash].css' : 'css/[id].css',
+        chunkFilename: production ? 'css/[contentHash].css' : 'css/[id].css',
+    }),
+    // Ejs pages
+    ...generateHtml(pages),
+];
+
+if (process.env.NODE_ENV !== 'production') {
+    const env = dotenv.config().parsed;
+    const envKeys = Object.keys(env).reduce((prev, next) => {
+        prev[`process.env.${next}`] = JSON.stringify(env[next]);
+        return prev;
+    }, {});
+    plugins.push(new webpack.DefinePlugin(envKeys));
+} else {
+    const envKeys = Object.keys(process.env).reduce((prev, next) => {
+        prev[`process.env.${next}`] = JSON.stringify(process.env[next]);
+        return prev;
+    }, {});
+    plugins.push(new webpack.DefinePlugin(envKeys));
+}
 
 const config = [
     {
@@ -107,20 +127,7 @@ const config = [
             },
         },
 
-        plugins: [
-            new CleanWebpackPlugin(),
-            // create blog,
-            new MiniCssExtractPlugin({
-                filename: production ? 'css/[contentHash].css' : 'css/[id].css',
-                chunkFilename: production
-                    ? 'css/[contentHash].css'
-                    : 'css/[id].css',
-            }),
-            // Ejs pages
-            ...generateHtml(pages),
-            // Environment variables
-            new webpack.DefinePlugin(envKeys),
-        ],
+        plugins,
     },
 ];
 

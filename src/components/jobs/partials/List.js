@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { gql } from '@apollo/client';
 import getClient from '../../../helpers/apolloClient';
-import Table from './Table.js';
-import SearchBar from './SearchBar.js';
+import Table from './Table';
+import SearchBar from './SearchBar';
 
 export default class JobsList extends Component {
     constructor() {

@@ -1,5 +1,5 @@
-import List from './partials/List.jsx';
-import { Jobs } from './presenter.js';
+import List from './partials/List';
+import { Jobs } from './presenter';
 
 const ROUTES = [
     {

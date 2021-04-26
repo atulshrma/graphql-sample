@@ -1,8 +1,8 @@
 import fs from 'fs';
-import dotenv from 'dotenv';
+// import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 
-dotenv.config();
+// dotenv.config();
 
 mongoose
     .connect(process.env.MONGODB_URL)
@@ -11,7 +11,7 @@ mongoose
 
 import Jobs from '../components/jobs/model';
 
-fs.readFile(__dirname + '/mock_data.json', async (err, data) => {
+fs.readFile('../../db/mock_data.json', async (err, data) => {
     if (err) {
         console.log('An error occured: ', err);
         process.exit();

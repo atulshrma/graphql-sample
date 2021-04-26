@@ -1,4 +1,4 @@
-import Jobs from './entity.js';
+import Jobs from './entity';
 import buildSearchFilter from './helpers/buildSearchFilter';
 import buildSortMap from './helpers/buildSortMap';
 

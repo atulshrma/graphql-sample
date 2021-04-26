@@ -1,5 +1,5 @@
 import React from 'react';
-import List from './partials/List.jsx';
+import List from './partials/List';
 
 export function Jobs() {
     return <List />;
