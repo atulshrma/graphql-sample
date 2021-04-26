@@ -5,7 +5,7 @@ export async function GetJobs({ skip, limit, search }) {
     const filter = buildSearchFilter(search);
 
     const jobs = await Jobs.find(filter).skip(skip).limit(limit);
-    const count = await Jobs.find().estimatedDocumentCount();
+    const count = await Jobs.find(filter).count();
 
     return { jobs, count };
 }

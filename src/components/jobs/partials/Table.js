@@ -35,7 +35,7 @@ export default function Table({ columns, data, fetchData, pageCount }) {
     // Render the UI for your table
     return (
         <React.Fragment>
-            <div className="row">
+            {/* <div className="row">
                 <div className="col-md-4 input-group mb-3">
                     <div className="input-group-prepend">
                         <label
@@ -71,7 +71,7 @@ export default function Table({ columns, data, fetchData, pageCount }) {
                         ))}
                     </select>
                 </span>
-            </div>
+            </div> */}
             <table {...getTableProps()} className="table">
                 <thead>
                     {headerGroups.map((headerGroup) => (
