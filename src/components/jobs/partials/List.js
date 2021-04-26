@@ -13,17 +13,19 @@ export default class JobsList extends Component {
             count: 0,
             pageSize: 0,
             search: '',
+            sort: {},
         };
         this.fetchData = this.fetchData.bind(this);
         this.searchHandler = this.searchHandler.bind(this);
         this.searchChangeHandler = this.searchChangeHandler.bind(this);
+        this.onSortToggle = this.onSortToggle.bind(this);
     }
 
     componentDidMount() {
         this.fetchData({ pageIndex: 0, pageSize: 10 });
     }
 
-    fetchData({ pageIndex, pageSize, search }) {
+    fetchData({ pageIndex, pageSize, search, sort }) {
         this.setState({ loading: true });
         const page = pageIndex || 0 + 1;
         const size = pageSize || 10;
@@ -34,7 +36,11 @@ export default class JobsList extends Component {
             .query({
                 query: gql`
                     query GetJobs {
-                        jobs(page: ${page}, size: ${size}, search: "${searchString}") {
+                        jobs(page: ${page}, size: ${size}, search: "${searchString}"${
+                    sort && Object.keys(sort).length
+                        ? ', orderBy:' + JSON.stringify(sort).replace(/"/g, '')
+                        : ''
+                }) {
                             count
                             jobs {
                                 name
@@ -60,6 +66,21 @@ export default class JobsList extends Component {
             });
     }
 
+    onSortToggle(id, isSorted, isAsc) {
+        const { pageIndex, pageSize, search, sort } = this.state;
+        if (!isSorted) {
+            delete sort[id];
+        } else {
+            sort[id] = isAsc ? 'asc' : 'desc';
+        }
+        this.setState(
+            Object.assign({}, this.state, {
+                sort,
+            }),
+        );
+        this.fetchData({ pageIndex, pageSize, search, sort });
+    }
+
     searchHandler(event) {
         event.preventDefault();
         const { pageSize, search } = this.state;
@@ -79,10 +100,15 @@ export default class JobsList extends Component {
 
         const columns = [
             { Header: 'Name', accessor: 'name' },
-            { Header: 'Description', accessor: 'description' },
-            { Header: 'Image', accessor: 'image' },
             {
-                Header: 'Last Edit On',
+                Header: 'Description',
+                accessor: 'description',
+                disableSortBy: true,
+            },
+            { Header: 'Image', accessor: 'image', disableSortBy: true },
+            {
+                Header: 'Last Edited',
+                id: 'dateLastEdited',
                 accessor: (row) => {
                     const date = new Date(0);
                     date.setUTCMilliseconds(row.dateLastEdited);
@@ -106,6 +132,7 @@ export default class JobsList extends Component {
                         fetchData={this.fetchData}
                         loading={loading}
                         pageCount={Math.ceil(count / pageSize)}
+                        onSortToggle={this.onSortToggle}
                     />
                 </div>
             </div>

@@ -1,7 +1,14 @@
 import React, { useEffect } from 'react';
-import { useTable, usePagination } from 'react-table';
+import { useTable, usePagination, useSortBy } from 'react-table';
+import cx from 'classnames';
 
-export default function Table({ columns, data, fetchData, pageCount }) {
+export default function Table({
+    columns,
+    data,
+    fetchData,
+    pageCount,
+    onSortToggle,
+}) {
     // Use the state and functions returned from useTable to build your UI
     const {
         getTableProps,
@@ -24,13 +31,44 @@ export default function Table({ columns, data, fetchData, pageCount }) {
             manualPagination: true,
             autoResetPage: false,
             pageCount,
+            manualSortBy: true,
         },
+        useSortBy,
         usePagination,
     );
 
     useEffect(() => {
         fetchData({ pageIndex, pageSize });
     }, [fetchData, pageIndex, pageSize]);
+
+    const renderColumnHeader = function (column) {
+        const props = column.getHeaderProps(column.getSortByToggleProps());
+
+        let onClick;
+        const classNames = cx({
+            'fa fa-sort-up': column.isSorted && !column.isSortedDesc,
+            'fa fa-sort-down': column.isSorted && column.isSortedDesc,
+        });
+        if (column.canSort) {
+            onClick = function (event) {
+                const isAsc =
+                    column.isSorted === false &&
+                    column.isSortedDesc === undefined;
+                const isDesc =
+                    column.isSorted === true && column.isSortedDesc === false;
+                props.onClick(event);
+                if (onSortToggle) {
+                    onSortToggle(column.id, isAsc || isDesc, isAsc);
+                }
+            };
+        }
+        return (
+            <th {...props} onClick={onClick}>
+                {column.render('Header')}
+                <i className={classNames}></i>
+            </th>
+        );
+    };
 
     // Render the UI for your table
     return (
@@ -76,11 +114,7 @@ export default function Table({ columns, data, fetchData, pageCount }) {
                 <thead>
                     {headerGroups.map((headerGroup) => (
                         <tr {...headerGroup.getHeaderGroupProps()}>
-                            {headerGroup.headers.map((column) => (
-                                <th {...column.getHeaderProps()}>
-                                    {column.render('Header')}
-                                </th>
-                            ))}
+                            {headerGroup.headers.map(renderColumnHeader)}
                         </tr>
                     ))}
                 </thead>
