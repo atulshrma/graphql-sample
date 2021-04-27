@@ -1,13 +1,17 @@
 # Express-GraphQL + React SSR
 
-## To run development server
+## Run the application
+
+Run one of the command-set listed below and navigate to http://localhost:3000 in your browser.
+
+### To run development server
 
 ```
 $ MONGODB_URL=<mongodb_url> npm run dev
 ```
 
 
-## To run production server
+### To run production server
 
 To launch the application and database
 ```
@@ -20,8 +24,7 @@ $ docker-compose up mongo-seed
 ```
 > **NOTE**: Only run the seed command once
 
-
-## To run tests
+## Run the tests
 
 ```
 $ npm i
