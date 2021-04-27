@@ -21,3 +21,9 @@ $ docker-compose up mongo-seed
 > **NOTE**: Only run the seed command once
 
 
+## To run tests
+
+```
+$ npm i
+$ npm test
+```
