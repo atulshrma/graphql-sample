@@ -28,5 +28,6 @@ $ docker-compose up mongo-seed
 
 ```
 $ npm i
+$ echo "MONGODB_TEST_URL=<your mongodb url>" >> .env
 $ npm test
 ```
